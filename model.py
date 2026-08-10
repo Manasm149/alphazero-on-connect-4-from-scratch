@@ -449,6 +449,8 @@ def expand_node(node, priors):
 
         node['children'][action] = child
 
+    node['is_expanded'] = True
+
 # Step 34 - backup_value
 def backup_value(leaf, value):
     node = leaf
