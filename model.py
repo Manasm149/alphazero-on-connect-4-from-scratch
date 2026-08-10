@@ -393,17 +393,12 @@ def select_best_child(node, legal_actions, c_puct=1.5):
     return best_action, best_child
 
 # Step 31 - select_leaf
-def select_leaf(root, c_puct):
+def select_leaf(root, c_puct=1.5):
     node = root
 
-    while node['children']:
+    while node.get('is_expanded', False):
         legal_actions = list(node['children'].keys())
-
-        _, node = select_best_child(
-            node,
-            legal_actions,
-            c_puct
-        )
+        _, node = select_best_child(node, legal_actions, c_puct)
 
     return node
 
@@ -440,8 +435,6 @@ def expand_node(node, priors):
     board = node['board']
     player = node['to_play']
 
-    node['children'] = {}
-
     for action in valid_moves(board):
         new_board = drop_piece(board, action, player)
         next_player = other_player(player)
@@ -455,8 +448,6 @@ def expand_node(node, priors):
         child['to_play'] = next_player
 
         node['children'][action] = child
-
-    node['is_expanded'] = True
 
 # Step 34 - backup_value
 def backup_value(leaf, value):
@@ -479,36 +470,29 @@ def make_mcts_node(prior=0.0, parent=None):
 
 # Step 35 - run_one_simulation
 def run_one_simulation(root, net, c_puct=1.5):
-    # Select an unexpanded leaf
     leaf = select_leaf(root, c_puct)
 
     board = leaf['board']
     to_play = leaf['to_play']
 
-    # Check if the leaf is terminal
     done, winner = is_terminal(board)
 
     if done:
-        # Value from the perspective of the player to move
         if winner == 0:
             value = 0.0
         elif winner == to_play:
             value = 1.0
         else:
             value = -1.0
-
     else:
-        # Evaluate non-terminal position with the network
         priors, value = evaluate_with_network(
             net,
             board,
             to_play
         )
 
-        # Expand the leaf using network priors
         expand_node(leaf, priors)
 
-    # Propagate value back through the tree
     backup_value(leaf, value)
 
 # Step 36 - run_mcts
