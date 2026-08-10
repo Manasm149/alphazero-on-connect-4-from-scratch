@@ -354,10 +354,10 @@ def make_mcts_node(prior=0.0, parent=None):
 
 # Step 28 - node_q_value
 def node_q_value(node):
-    if node['visit_count'] == 0:
+    if node['visits'] == 0:
         return 0.0
 
-    return node['value_sum'] / node['visit_count']
+    return node['value_sum'] / node['visits']
 
 # Step 29 - ucb_score
 import math
@@ -480,17 +480,17 @@ def make_mcts_node(prior=0.0, parent=None):
 
 # Step 35 - run_one_simulation
 def run_one_simulation(root, net, c_puct=1.5):
-    # 1. Select a leaf by following the best PUCT children
+    # Select an unexpanded leaf
     leaf = select_leaf(root, c_puct)
 
     board = leaf['board']
     to_play = leaf['to_play']
 
-    # 2. Check whether the leaf is terminal
+    # Check if the leaf is terminal
     done, winner = is_terminal(board)
 
     if done:
-        # Value must be from the perspective of the player to move
+        # Value from the perspective of the player to move
         if winner == 0:
             value = 0.0
         elif winner == to_play:
@@ -499,18 +499,27 @@ def run_one_simulation(root, net, c_puct=1.5):
             value = -1.0
 
     else:
-        # 3. Evaluate non-terminal leaf with the network
+        # Evaluate non-terminal position with the network
         priors, value = evaluate_with_network(
             net,
             board,
             to_play
         )
 
-        # 4. Expand the leaf
+        # Expand the leaf using network priors
         expand_node(leaf, priors)
 
-    # 5. Backup the value through the tree
+    # Propagate value back through the tree
     backup_value(leaf, value)
+def make_mcts_node(prior=0.0, parent=None):
+    return {
+        'prior': prior,
+        'visits': 0,
+        'value_sum': 0.0,
+        'children': {},
+        'parent': parent,
+        'is_expanded': False
+    }
 
 # Step 36 - run_mcts
 def run_mcts(state, to_play, net, num_simulations, c_puct):
