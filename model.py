@@ -178,11 +178,25 @@ def board_to_torch_tensor(board, current_player):
 
     return tensor.unsqueeze(0)
 
-# Step 17 - init_conv_backbone (not yet solved)
-# TODO: implement
+# Step 17 - init_conv_backbone
+import torch.nn as nn
 
-# Step 18 - init_policy_head (not yet solved)
-# TODO: implement
+def init_conv_backbone(in_channels=2, hidden_channels=16):
+    return nn.Sequential(
+        nn.Conv2d(in_channels, hidden_channels, kernel_size=3, padding=1),
+        nn.ReLU(),
+        nn.Conv2d(hidden_channels, hidden_channels, kernel_size=3, padding=1),
+        nn.ReLU()
+    )
+
+# Step 18 - init_policy_head
+import torch.nn as nn
+
+def init_policy_head(hidden_channels, num_columns):
+    return nn.Sequential(
+        nn.Conv2d(hidden_channels, 1, kernel_size=1),
+        nn.Flatten(start_dim=1)
+    )
 
 # Step 19 - init_value_head (not yet solved)
 # TODO: implement
