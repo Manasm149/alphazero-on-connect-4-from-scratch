@@ -274,8 +274,21 @@ def action_mask(board):
 
     return mask
 
-# Step 23 - masked_policy_logits (not yet solved)
-# TODO: implement
+# Step 23 - masked_policy_logits
+import torch
+import numpy as np
+
+def masked_policy_logits(logits, mask):
+    mask = torch.as_tensor(
+        mask,
+        dtype=torch.bool,
+        device=logits.device
+    )
+
+    masked_logits = logits.clone()
+    masked_logits[..., ~mask] = float('-inf')
+
+    return masked_logits
 
 # Step 24 - masked_log_softmax (not yet solved)
 # TODO: implement
