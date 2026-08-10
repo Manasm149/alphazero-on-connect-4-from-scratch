@@ -463,17 +463,66 @@ def backup_value(leaf, value):
     node = leaf
 
     while node is not None:
-        node['visit_count'] += 1
+        node['visits'] += 1
         node['value_sum'] += value
 
         value = -value
         node = node['parent']
+def make_mcts_node(prior=0.0, parent=None):
+    return {
+        'prior': prior,
+        'visits': 0,
+        'value_sum': 0.0,
+        'children': {},
+        'parent': parent,
+        'is_expanded': False
+    }
 
-# Step 35 - run_one_simulation (not yet solved)
-# TODO: implement
+# Step 35 - run_one_simulation
+def run_one_simulation(root, net, c_puct=1.5):
+    # 1. Select a leaf by following the best PUCT children
+    leaf = select_leaf(root, c_puct)
 
-# Step 36 - run_mcts (not yet solved)
-# TODO: implement
+    board = leaf['board']
+    to_play = leaf['to_play']
+
+    # 2. Check whether the leaf is terminal
+    done, winner = is_terminal(board)
+
+    if done:
+        # Value must be from the perspective of the player to move
+        if winner == 0:
+            value = 0.0
+        elif winner == to_play:
+            value = 1.0
+        else:
+            value = -1.0
+
+    else:
+        # 3. Evaluate non-terminal leaf with the network
+        priors, value = evaluate_with_network(
+            net,
+            board,
+            to_play
+        )
+
+        # 4. Expand the leaf
+        expand_node(leaf, priors)
+
+    # 5. Backup the value through the tree
+    backup_value(leaf, value)
+
+# Step 36 - run_mcts
+def run_mcts(state, to_play, net, num_simulations, c_puct):
+    root = make_mcts_node()
+
+    root['board'] = state.copy()
+    root['to_play'] = to_play
+
+    for _ in range(num_simulations):
+        run_one_simulation(root, net, c_puct)
+
+    return root
 
 # Step 37 - visit_count_policy (not yet solved)
 # TODO: implement

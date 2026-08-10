@@ -44,8 +44,8 @@ python scaffold.py
 - [x] **32.** evaluate_with_network
 - [x] **33.** expand_node
 - [x] **34.** backup_value
-- [ ] **35.** run_one_simulation
-- [ ] **36.** run_mcts
+- [x] **35.** run_one_simulation
+- [x] **36.** run_mcts
 - [ ] **37.** visit_count_policy
 - [ ] **38.** mcts_choose_action
 - [ ] **39.** record_self_play_step
