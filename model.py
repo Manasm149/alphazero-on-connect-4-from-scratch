@@ -190,10 +190,14 @@ def init_conv_backbone(in_channels=2, hidden_channels=16):
     )
 
 # Step 18 - init_policy_head
+import torch
 import torch.nn as nn
 
-def init_policy_head(hidden_channels, num_columns):
+
+def init_policy_head(hidden_channels=16, num_columns=7):
+    """Return an nn.Module mapping (B, hidden_channels, 6, 7) -> (B, num_columns) logits."""
     return nn.Sequential(
+        nn.AdaptiveAvgPool2d((1, num_columns)),
         nn.Conv2d(hidden_channels, 1, kernel_size=1),
         nn.Flatten(start_dim=1)
     )
