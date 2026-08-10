@@ -124,8 +124,17 @@ def valid_moves(board):
 def board_is_full(board):
     return len(valid_moves(board)) == 0
 
-# Step 12 - is_terminal (not yet solved)
-# TODO: implement
+# Step 12 - is_terminal
+def is_terminal(board):
+    winner = check_winner(board)
+
+    if winner != 0:
+        return (True, winner)
+
+    if board_is_full(board):
+        return (True, 0)
+
+    return (False, 0)
 
 # Step 13 - other_player (not yet solved)
 # TODO: implement
