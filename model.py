@@ -349,7 +349,8 @@ def make_mcts_node(prior=0.0, parent=None):
         'visit_count': 0,
         'value_sum': 0.0,
         'children': {},
-        'parent': parent
+        'parent': parent,
+        'is_expanded': False
     }
 
 # Step 28 - node_q_value
@@ -471,6 +472,15 @@ def make_mcts_node(prior=0.0, parent=None):
     }
 
 # Step 35 - run_one_simulation
+def make_mcts_node(prior=0.0, parent=None):
+    return {
+        'prior': prior,
+        'visit_count': 0,
+        'value_sum': 0.0,
+        'children': {},
+        'parent': parent
+        'is_expanded': False
+    }
 def run_one_simulation(root, net, c_puct=1.5):
     leaf = select_leaf(root, c_puct)
 
