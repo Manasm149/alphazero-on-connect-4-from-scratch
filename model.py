@@ -463,11 +463,19 @@ def backup_value(leaf, value):
     node = leaf
 
     while node is not None:
-        node['visit_count'] += 1
+        node['visits'] += 1
         node['value_sum'] += value
 
         value = -value
         node = node['parent']
+def make_mcts_node(prior=0.0, parent=None):
+    return {
+        'prior': prior,
+        'visits': 0,
+        'value_sum': 0.0,
+        'children': {},
+        'parent': parent
+    }
 
 # Step 35 - run_one_simulation
 def run_one_simulation(root, net, c_puct=1.5):
