@@ -435,11 +435,39 @@ def evaluate_with_network(net, state, to_play):
 
     return priors, value
 
-# Step 33 - expand_node (not yet solved)
-# TODO: implement
+# Step 33 - expand_node
+def expand_node(node, priors):
+    board = node['board']
+    player = node['to_play']
 
-# Step 34 - backup_value (not yet solved)
-# TODO: implement
+    node['children'] = {}
+
+    for action in valid_moves(board):
+        new_board = drop_piece(board, action, player)
+        next_player = other_player(player)
+
+        child = make_mcts_node(
+            prior=float(priors[action]),
+            parent=node
+        )
+
+        child['board'] = new_board
+        child['to_play'] = next_player
+
+        node['children'][action] = child
+
+    node['is_expanded'] = True
+
+# Step 34 - backup_value
+def backup_value(leaf, value):
+    node = leaf
+
+    while node is not None:
+        node['visit_count'] += 1
+        node['value_sum'] += value
+
+        value = -value
+        node = node['parent']
 
 # Step 35 - run_one_simulation (not yet solved)
 # TODO: implement
