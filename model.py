@@ -407,8 +407,33 @@ def select_leaf(root, c_puct):
 
     return node
 
-# Step 32 - evaluate_with_network (not yet solved)
-# TODO: implement
+# Step 32 - evaluate_with_network
+import numpy as np
+import torch
+
+def evaluate_with_network(net, state, to_play):
+    # Encode board and add batch dimension
+    encoded = board_to_torch_tensor(state, to_play)
+
+    # Run network
+    logits, value = policy_value_forward(net, encoded)
+
+    # Legal move mask
+    mask = action_mask(state)
+
+    # Convert logits to log-probabilities, respecting legal moves
+    log_probs = masked_log_softmax(logits, mask)
+
+    # Convert log-probabilities to probabilities
+    priors = torch.exp(log_probs)
+
+    # Remove batch dimension and convert to numpy
+    priors = priors.squeeze(0).detach().cpu().numpy()
+
+    # Extract scalar value
+    value = float(value.squeeze().detach().cpu().item())
+
+    return priors, value
 
 # Step 33 - expand_node (not yet solved)
 # TODO: implement
