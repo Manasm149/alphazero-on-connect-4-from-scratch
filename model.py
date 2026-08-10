@@ -354,10 +354,10 @@ def make_mcts_node(prior=0.0, parent=None):
 
 # Step 28 - node_q_value
 def node_q_value(node):
-    if node['visits'] == 0:
+    if node['visit_count'] == 0:
         return 0.0
 
-    return node['value_sum'] / node['visits']
+    return node['value_sum'] / node['visit_count']
 
 # Step 29 - ucb_score
 import math
@@ -511,15 +511,6 @@ def run_one_simulation(root, net, c_puct=1.5):
 
     # Propagate value back through the tree
     backup_value(leaf, value)
-def make_mcts_node(prior=0.0, parent=None):
-    return {
-        'prior': prior,
-        'visits': 0,
-        'value_sum': 0.0,
-        'children': {},
-        'parent': parent,
-        'is_expanded': False
-    }
 
 # Step 36 - run_mcts
 def run_mcts(state, to_play, net, num_simulations, c_puct):
