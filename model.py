@@ -142,8 +142,18 @@ def other_player(player):
         return 2
     return 1
 
-# Step 14 - step_env (not yet solved)
-# TODO: implement
+# Step 14 - step_env
+def step_env(board, column, player):
+    # Drop the piece; drop_piece returns a new board
+    new_board = drop_piece(board, column, player)
+
+    # Check whether the game is over
+    done, winner = is_terminal(new_board)
+
+    # The next player is always the opponent
+    next_player = other_player(player)
+
+    return new_board, done, winner, next_player
 
 # Step 15 - encode_board (not yet solved)
 # TODO: implement
