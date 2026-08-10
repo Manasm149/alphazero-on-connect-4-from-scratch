@@ -111,8 +111,18 @@ def check_winner(board):
 
     return 0
 
-# Step 11 - board_is_full (not yet solved)
-# TODO: implement
+# Step 11 - board_is_full
+def column_full(board, column):
+    return board[0, column] != 0
+
+
+def valid_moves(board):
+    return [column for column in range(7)
+            if not column_full(board, column)]
+
+
+def board_is_full(board):
+    return len(valid_moves(board)) == 0
 
 # Step 12 - is_terminal (not yet solved)
 # TODO: implement
