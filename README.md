@@ -1,6 +1,6 @@
 # AlphaZero on Connect-4 from Scratch
 
-Built a complete AlphaZero-style agent for Connect-4, from the bare game rules to a self-play training loop that pits a policy-value network guided by PUCT Monte Carlo Tree Search against itself. Along the way we implement the board engine, neural network, MCTS, self-play data generation, training, and evaluation against baselines.
+Build a complete AlphaZero-style agent for Connect-4, from the bare game rules to a self-play training loop that pits a policy-value network guided by PUCT Monte Carlo Tree Search against itself. Along the way you implement the board engine, neural network, MCTS, self-play data generation, training, and evaluation against baselines.
 
 ## How to run
 
@@ -36,7 +36,7 @@ python scaffold.py
 - [x] **24.** masked_log_softmax
 - [x] **25.** sample_action_from_policy
 - [x] **26.** greedy_action_from_policy
-- [ ] **27.** make_mcts_node
+- [x] **27.** make_mcts_node
 - [ ] **28.** node_q_value
 - [ ] **29.** ucb_score
 - [ ] **30.** select_best_child
@@ -70,4 +70,4 @@ python scaffold.py
 
 ---
 
-
+Built on Deep-ML.
