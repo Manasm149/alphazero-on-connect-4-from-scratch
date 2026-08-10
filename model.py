@@ -155,8 +155,18 @@ def step_env(board, column, player):
 
     return new_board, done, winner, next_player
 
-# Step 15 - encode_board (not yet solved)
-# TODO: implement
+# Step 15 - encode_board
+import numpy as np
+
+def encode_board(board, current_player):
+    opponent = other_player(current_player)
+
+    encoded = np.zeros((2, 6, 7), dtype=np.float32)
+
+    encoded[0] = (board == current_player)
+    encoded[1] = (board == opponent)
+
+    return encoded
 
 # Step 16 - board_to_torch_tensor (not yet solved)
 # TODO: implement
