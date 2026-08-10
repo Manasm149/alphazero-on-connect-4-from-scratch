@@ -12,8 +12,13 @@ import numpy as np
 def make_empty_board():
     return np.zeros((6, 7), dtype=int)
 
-# Step 2 - column_top_row (not yet solved)
-# TODO: implement
+# Step 2 - column_top_row
+def column_top_row(board, column):
+    for row in range(5, -1, -1):
+        if board[row, column] == 0:
+            return row
+
+    return -1
 
 # Step 3 - drop_piece (not yet solved)
 # TODO: implement
