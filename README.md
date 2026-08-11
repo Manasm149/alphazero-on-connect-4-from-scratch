@@ -60,8 +60,8 @@ python scaffold.py
 - [x] **48.** iterate_minibatches
 - [x] **49.** training_step
 - [x] **50.** training_epoch
-- [ ] **51.** self_play_iteration
-- [ ] **52.** train_loop
+- [x] **51.** self_play_iteration
+- [x] **52.** train_loop
 - [ ] **53.** random_policy_action
 - [ ] **54.** greedy_agent_action
 - [ ] **55.** play_one_match

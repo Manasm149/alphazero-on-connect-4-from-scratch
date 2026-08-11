@@ -855,11 +855,80 @@ def training_epoch(
 
     return totals
 
-# Step 51 - self_play_iteration (not yet solved)
-# TODO: implement
+# Step 51 - self_play_iteration
+def self_play_iteration(
+    net,
+    optimizer,
+    num_games,
+    num_simulations,
+    c_puct,
+    batch_size,
+    num_epochs,
+    temperature=1.0,
+    policy_weight=1.0,
+    value_weight=1.0,
+    l2_weight=1e-4,
+    seed=None
+):
+    # Collect fresh self-play training data
+    buffer = generate_self_play_batch(
+        net,
+        num_games,
+        num_simulations,
+        c_puct,
+        temperature
+    )
 
-# Step 52 - train_loop (not yet solved)
-# TODO: implement
+    # Train for the requested number of epochs
+    losses = []
+
+    for epoch in range(num_epochs):
+        epoch_losses = training_epoch(
+            net,
+            optimizer,
+            buffer,
+            batch_size,
+            seed=seed,
+            policy_weight=policy_weight,
+            value_weight=value_weight,
+            l2_weight=l2_weight
+        )
+        losses.append(epoch_losses)
+
+    return {
+        'buffer_size': int(len(buffer)),
+        'losses': losses
+    }
+
+# Step 52 - train_loop
+def train_loop(
+    net,
+    optimizer,
+    num_iterations,
+    num_games,
+    num_simulations,
+    c_puct,
+    batch_size,
+    num_epochs=1,
+    temperature=1.0
+):
+    results = []
+
+    for _ in range(num_iterations):
+        result = self_play_iteration(
+            net,
+            optimizer,
+            num_games,
+            num_simulations,
+            c_puct,
+            batch_size,
+            num_epochs,
+            temperature
+        )
+
+        results.append(result)
+
+    return results
 
 # Step 53 - random_policy_action (not yet solved)
 # TODO: implement
