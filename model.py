@@ -545,11 +545,34 @@ def visit_count_policy(root, temperature=1.0):
 
     return probs / total
 
-# Step 38 - mcts_choose_action (not yet solved)
-# TODO: implement
+# Step 38 - mcts_choose_action
+def mcts_choose_action(state, to_play, net, num_simulations, c_puct, temperature=1.0):
+    root = run_mcts(
+        state,
+        to_play,
+        net,
+        num_simulations,
+        c_puct
+    )
 
-# Step 39 - record_self_play_step (not yet solved)
-# TODO: implement
+    policy = visit_count_policy(
+        root,
+        temperature
+    )
+
+    action = int(np.random.choice(7, p=policy))
+
+    return action, policy
+
+# Step 39 - record_self_play_step
+def record_self_play_step(history, board, policy, to_play):
+    history.append({
+        'board': board.copy(),
+        'policy': policy.copy(),
+        'to_play': to_play
+    })
+
+    return history
 
 # Step 40 - play_self_play_game (not yet solved)
 # TODO: implement
