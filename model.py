@@ -723,8 +723,17 @@ def encode_batch_states(boards, to_plays):
         dtype=torch.float32
     )
 
-# Step 48 - iterate_minibatches (not yet solved)
-# TODO: implement
+# Step 48 - iterate_minibatches
+import numpy as np
+
+def iterate_minibatches(buffer, batch_size, seed=None):
+    rng = np.random.default_rng(seed)
+    indices = np.arange(len(buffer))
+    rng.shuffle(indices)
+
+    for start in range(0, len(buffer), batch_size):
+        batch_indices = indices[start:start + batch_size]
+        yield [buffer[i] for i in batch_indices]
 
 # Step 49 - training_step (not yet solved)
 # TODO: implement
