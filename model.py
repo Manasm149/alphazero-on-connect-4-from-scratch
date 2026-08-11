@@ -574,11 +574,61 @@ def record_self_play_step(history, board, policy, to_play):
 
     return history
 
-# Step 40 - play_self_play_game (not yet solved)
-# TODO: implement
+# Step 40 - play_self_play_game
+def play_self_play_game(net, num_simulations, c_puct, temperature=1.0):
+    board = make_empty_board()
+    to_play = 1
+    history = []
 
-# Step 41 - assign_value_targets (not yet solved)
-# TODO: implement
+    while True:
+        # Choose action and get the MCTS policy for the current position
+        action, policy = mcts_choose_action(
+            board,
+            to_play,
+            net,
+            num_simulations,
+            c_puct,
+            temperature
+        )
+
+        # Record the position BEFORE making the move
+        record_self_play_step(
+            history,
+            board,
+            policy,
+            to_play
+        )
+
+        # Apply the move
+        board, done, winner, next_player = step_env(
+            board,
+            action,
+            to_play
+        )
+
+        if done:
+            return history, winner
+
+        to_play = next_player
+
+# Step 41 - assign_value_targets
+def assign_value_targets(history, winner):
+    result = []
+
+    for step in history:
+        new_step = step.copy()
+
+        if winner == 0:
+            value = 0.0
+        elif step['to_play'] == winner:
+            value = 1.0
+        else:
+            value = -1.0
+
+        new_step['value'] = value
+        result.append(new_step)
+
+    return result
 
 # Step 42 - generate_self_play_batch (not yet solved)
 # TODO: implement
