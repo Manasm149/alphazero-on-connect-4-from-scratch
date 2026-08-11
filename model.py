@@ -949,8 +949,25 @@ def greedy_agent_action(net, state, to_play):
 
     return int(legal[torch.argmax(legal_logits).item()])
 
-# Step 55 - play_one_match (not yet solved)
-# TODO: implement
+# Step 55 - play_one_match
+def play_one_match(agent_one, agent_two, starting_player=1):
+    board = make_empty_board()
+    to_play = starting_player
+
+    while True:
+        if to_play == 1:
+            action = agent_one(board, to_play)
+        else:
+            action = agent_two(board, to_play)
+
+        board, done, winner, next_player = step_env(
+            board, action, to_play
+        )
+
+        if done:
+            return winner
+
+        to_play = next_player
 
 # Step 56 - match_win_rate (not yet solved)
 # TODO: implement
