@@ -811,8 +811,49 @@ def training_step(
         'l2': float(l2_loss.detach().item())
     }
 
-# Step 50 - training_epoch (not yet solved)
-# TODO: implement
+# Step 50 - training_epoch
+def training_epoch(
+    net,
+    optimizer,
+    buffer,
+    batch_size,
+    seed=None,
+    policy_weight=1.0,
+    value_weight=1.0,
+    l2_weight=1e-4
+):
+    totals = {
+        'total': 0.0,
+        'policy': 0.0,
+        'value': 0.0,
+        'l2': 0.0
+    }
+
+    num_batches = 0
+
+    for minibatch in iterate_minibatches(buffer, batch_size, seed):
+        losses = training_step(
+            net,
+            optimizer,
+            minibatch,
+            policy_weight,
+            value_weight,
+            l2_weight
+        )
+
+        for key in totals:
+            totals[key] += losses[key]
+
+        num_batches += 1
+
+    # Handle an empty buffer
+    if num_batches == 0:
+        return totals
+
+    for key in totals:
+        totals[key] /= num_batches
+
+    return totals
 
 # Step 51 - self_play_iteration (not yet solved)
 # TODO: implement
