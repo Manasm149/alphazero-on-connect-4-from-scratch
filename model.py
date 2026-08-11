@@ -653,8 +653,11 @@ import torch
 def value_loss_mse(predicted_values, target_values):
     return torch.mean((predicted_values - target_values) ** 2)
 
-# Step 44 - policy_loss_cross_entropy (not yet solved)
-# TODO: implement
+# Step 44 - policy_loss_cross_entropy
+import torch
+
+def policy_loss_cross_entropy(predicted_log_probs, target_policy):
+    return -(target_policy * predicted_log_probs).sum(dim=1).mean()
 
 # Step 45 - l2_regularization_loss (not yet solved)
 # TODO: implement
