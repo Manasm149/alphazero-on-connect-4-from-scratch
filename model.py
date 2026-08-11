@@ -930,8 +930,24 @@ def random_policy_action(state, to_play, rng=None):
     legal_moves = valid_moves(state)
     return int(rng.choice(legal_moves))
 
-# Step 54 - greedy_agent_action (not yet solved)
-# TODO: implement
+# Step 54 - greedy_agent_action
+def greedy_agent_action(net, state, to_play):
+    encoded = encode_board(state, to_play)
+
+    # Add batch dimension: (1, 2, 6, 7)
+    encoded = torch.as_tensor(
+        encoded, dtype=torch.float32
+    ).unsqueeze(0)
+
+    with torch.no_grad():
+        logits, _ = policy_value_forward(net, encoded)
+
+    legal = valid_moves(state)
+
+    # Only consider legal columns
+    legal_logits = logits[0, legal]
+
+    return int(legal[torch.argmax(legal_logits).item()])
 
 # Step 55 - play_one_match (not yet solved)
 # TODO: implement
