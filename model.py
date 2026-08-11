@@ -708,8 +708,20 @@ def combined_loss(
 
     return total_loss, components
 
-# Step 47 - encode_batch_states (not yet solved)
-# TODO: implement
+# Step 47 - encode_batch_states
+import numpy as np
+import torch
+
+def encode_batch_states(boards, to_plays):
+    encoded = [
+        encode_board(board, player)
+        for board, player in zip(boards, to_plays)
+    ]
+
+    return torch.tensor(
+        np.stack(encoded),
+        dtype=torch.float32
+    )
 
 # Step 48 - iterate_minibatches (not yet solved)
 # TODO: implement
