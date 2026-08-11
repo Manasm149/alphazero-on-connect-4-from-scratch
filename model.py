@@ -863,14 +863,9 @@ def self_play_iteration(
     num_simulations,
     c_puct,
     batch_size,
-    num_epochs,
-    temperature=1.0,
-    policy_weight=1.0,
-    value_weight=1.0,
-    l2_weight=1e-4,
-    seed=None
+    num_epochs=1,
+    temperature=1.0
 ):
-    # Collect fresh self-play training data
     buffer = generate_self_play_batch(
         net,
         num_games,
@@ -879,24 +874,19 @@ def self_play_iteration(
         temperature
     )
 
-    # Train for the requested number of epochs
     losses = []
 
-    for epoch in range(num_epochs):
+    for _ in range(num_epochs):
         epoch_losses = training_epoch(
             net,
             optimizer,
             buffer,
-            batch_size,
-            seed=seed,
-            policy_weight=policy_weight,
-            value_weight=value_weight,
-            l2_weight=l2_weight
+            batch_size
         )
         losses.append(epoch_losses)
 
     return {
-        'buffer_size': int(len(buffer)),
+        'buffer_size': len(buffer),
         'losses': losses
     }
 
@@ -930,8 +920,15 @@ def train_loop(
 
     return results
 
-# Step 53 - random_policy_action (not yet solved)
-# TODO: implement
+# Step 53 - random_policy_action
+import numpy as np
+
+def random_policy_action(state, to_play, rng=None):
+    if rng is None:
+        rng = np.random.default_rng()
+
+    legal_moves = valid_moves(state)
+    return int(rng.choice(legal_moves))
 
 # Step 54 - greedy_agent_action (not yet solved)
 # TODO: implement
