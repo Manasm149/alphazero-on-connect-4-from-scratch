@@ -735,8 +735,81 @@ def iterate_minibatches(buffer, batch_size, seed=None):
         batch_indices = indices[start:start + batch_size]
         yield [buffer[i] for i in batch_indices]
 
-# Step 49 - training_step (not yet solved)
-# TODO: implement
+# Step 49 - training_step
+import numpy as np
+import torch
+
+
+def training_step(
+    net,
+    optimizer,
+    minibatch,
+    policy_weight=1.0,
+    value_weight=1.0,
+    l2_weight=1e-4
+):
+    boards = [step['board'] for step in minibatch]
+    to_plays = [step['to_play'] for step in minibatch]
+
+    target_policy = torch.tensor(
+        np.stack([step['policy'] for step in minibatch]),
+        dtype=torch.float32
+    )
+
+    target_values = torch.tensor(
+        [step['value'] for step in minibatch],
+        dtype=torch.float32
+    )
+
+    # Encode boards: (B, 2, 6, 7)
+    states = encode_batch_states(boards, to_plays)
+
+    # Forward pass
+    logits, predicted_values = policy_value_forward(net, states)
+
+    # Build one legal-move mask per board
+    masks = np.stack([
+        action_mask(board)
+        for board in boards
+    ])
+
+    # Mask illegal columns before log-softmax
+    masked_logits = masked_policy_logits(logits, masks)
+    predicted_log_probs = torch.log_softmax(masked_logits, dim=-1)
+
+    predicted_values = predicted_values.squeeze(-1)
+
+    # Individual loss components
+    policy_loss = policy_loss_cross_entropy(
+        predicted_log_probs,
+        target_policy
+    )
+
+    value_loss = value_loss_mse(
+        predicted_values,
+        target_values
+    )
+
+    l2_loss = l2_regularization_loss(net)
+
+    # Combined loss
+    total_loss = (
+        policy_weight * policy_loss
+        + value_weight * value_loss
+        + l2_weight * l2_loss
+    )
+
+    # One optimizer update
+    optimizer.zero_grad()
+    total_loss.backward()
+    optimizer.step()
+
+    return {
+        'total': float(total_loss.detach().item()),
+        'policy': float(policy_loss.detach().item()),
+        'value': float(value_loss.detach().item()),
+        'l2': float(l2_loss.detach().item())
+    }
 
 # Step 50 - training_epoch (not yet solved)
 # TODO: implement
