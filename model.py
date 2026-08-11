@@ -469,18 +469,10 @@ def make_mcts_node(prior=0.0, parent=None):
         'value_sum': 0.0,
         'children': {},
         'parent': parent
+        
     }
 
 # Step 35 - run_one_simulation
-def make_mcts_node(prior=0.0, parent=None):
-    return {
-        'prior': prior,
-        'visit_count': 0,
-        'value_sum': 0.0,
-        'children': {},
-        'parent': parent
-        'is_expanded': False
-    }
 def run_one_simulation(root, net, c_puct=1.5):
     leaf = select_leaf(root, c_puct)
 
@@ -519,8 +511,39 @@ def run_mcts(state, to_play, net, num_simulations, c_puct):
 
     return root
 
-# Step 37 - visit_count_policy (not yet solved)
-# TODO: implement
+# Step 37 - visit_count_policy
+import numpy as np
+
+def visit_count_policy(root, temperature=1.0):
+    probs = np.zeros(7, dtype=float)
+
+    children = root['children']
+
+    # No children → uniform policy
+    if not children:
+        return np.ones(7, dtype=float) / 7.0
+
+    # Temperature = 0 → greedy / argmax
+    if temperature == 0:
+        best_action = max(
+            children,
+            key=lambda action: children[action]['visit_count']
+        )
+        probs[best_action] = 1.0
+        return probs
+
+    # Temperature > 0
+    for action, child in children.items():
+        visits = child['visit_count']
+        probs[action] = visits ** (1.0 / temperature)
+
+    total = probs.sum()
+
+    # Safety fallback if all visit counts are zero
+    if total == 0:
+        return np.ones(7, dtype=float) / 7.0
+
+    return probs / total
 
 # Step 38 - mcts_choose_action (not yet solved)
 # TODO: implement
